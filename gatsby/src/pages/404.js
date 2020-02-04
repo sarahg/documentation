@@ -11,6 +11,7 @@ class NotFoundPage extends React.Component {
     const { pathname } = this.props.location
     const badTitle = pathname.replace(/\//g, '')
     const searchPath = pathname.replace(/\//g, ' ').replace(/-/g, ' ')
+    window.location = `#addsearch=${searchPath}`
 
     return (
       <Layout>
@@ -23,8 +24,46 @@ class NotFoundPage extends React.Component {
             <div className="mb-70">
               <img className="notfound" src={SVG404} />
               <h2>Sorry, there's no page at <code>{badTitle}</code>.</h2>
-              <h3>Wanna <Link to={`/search/?addsearch=${searchPath}`}>Search for {searchPath}</Link>?</h3>
-              <h3>Or go <Link to="/"> Back to all docs</Link>?</h3>
+              <h3>You can try one of the links below, or go <Link to="/"> back to all docs</Link>?</h3>
+
+              <div className="addsearch-container">
+                  <Helmet>
+                  <script
+                  dangerouslySetInnerHTML={{
+                      __html: `
+                          function parseParamsFromUrl() {
+                          var queryString = window.location.replace(\//g, '');
+                              queryString = queryString.substring(11);
+                              queryString = queryString.split("+").join(" ");
+                          return queryString;
+                          }
+                          var urlParams = parseParamsFromUrl();
+                          document.getElementById('piodocsearch').setAttribute('value', urlParams);
+                      `
+                  }}
+                  />
+
+                  </Helmet>
+
+                  <div id="addsearch-results"></div>
+
+                  <script
+                  dangerouslySetInnerHTML={{
+                      __html: `
+                      window.addsearch_settings = {
+                          display_url: true,
+                          display_resultscount: true,
+                          display_date: true,
+                          display_sortby: true,
+                          display_category: true,
+                          automatic_match_all_query: true
+                      }
+                      `
+                  }}
+                  />
+              </div>
+
+
             </div>
           </div>
         </div>
