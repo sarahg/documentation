@@ -93,4 +93,19 @@ If you need help configuring external systems, consider joining the [Community F
 
 ### Ready To Create a Build Tools Project?
 
-Click _"Continue"_ to move onto the next section, which will walk you through creating a Build Tools project.
+### Access Tokens (Optional)
+
+The Build Tools plugin will prompt you to create access tokens for both [GitHub](https://github.com/settings/tokens) and [CircleCI](https://circleci.com/account/api), which are stored as environment variables. The GitHub token needs the **repo** (required) and **delete-repo** (optional) scopes. You may optionally generate these tokens ahead of time and manually export them to the local variables `GITHUB_TOKEN` and `CIRCLE_TOKEN`, respectively:
+
+```bash
+export GITHUB_TOKEN=yourGitHubToken
+export CIRCLE_TOKEN=yourCircleCIToken
+```
+
+If you need to replace a token, navigate to your [project settings page in CircleCI](https://circleci.com/docs/2.0/env-vars/#adding-environment-variables-in-the-app).
+
+<Accordion title="Build Tools Changelog" id="changelog" icon="newspaper">
+
+<BuildToolsChangelog />
+
+</Accordion>

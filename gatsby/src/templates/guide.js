@@ -27,9 +27,11 @@ import Enablement from "../components/enablement"
 import Color from "../components/color.js"
 import Download from "../components/download"
 import BuildTools from "../components/buildTools.js"
+import BuildToolsChangelog from "../components/buildToolsChangelog.js"
 import Partial from "../components/partial.js"
 import Image from "../layout/image"
 import ChecklistItem from "../components/checklistItem"
+import ReviewDate from "../components/reviewDate"
 
 const shortcodes = {
   Callout,
@@ -48,40 +50,44 @@ const shortcodes = {
   Enablement,
   Download,
   BuildTools,
+  BuildToolsChangelog,
   Partial,
   ChecklistItem,
   Image,
+  ReviewDate,
 }
 
 class GuideTemplate extends React.Component {
   componentDidMount() {
-
     $("[data-toggle=popover]").popover({
       trigger: "click",
-    });
-        
-    $('body').on('click', function (e) {
-        $('[data-toggle="popover"]').each(function () {
-        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-            $(this).popover('hide');
+    })
+
+    $("body").on("click", function(e) {
+      $('[data-toggle="popover"]').each(function() {
+        if (
+          !$(this).is(e.target) &&
+          $(this).has(e.target).length === 0 &&
+          $(".popover").has(e.target).length === 0
+        ) {
+          $(this).popover("hide")
         }
-        });
-    });
+      })
+    })
 
-    $('body').keyup(function (e) {
-      $('[data-toggle="popover"]').each(function () {
-      if (event.which === 27) {
-          $(this).popover('hide');
-      }
-      });
-    });
-
+    $("body").keyup(function(e) {
+      $('[data-toggle="popover"]').each(function() {
+        if (event.which === 27) {
+          $(this).popover("hide")
+        }
+      })
+    })
   }
 
   render() {
     const node = this.props.data.mdx
     const contentCols = node.frontmatter.showtoc ? 9 : 12
-
+    const isoDate = this.props.data.date
     const items = this.props.data.allMdx.edges.map(item => {
       return {
         id: item.node.id,
@@ -97,6 +103,7 @@ class GuideTemplate extends React.Component {
           description={node.frontmatter.description || node.excerpt}
           authors={node.frontmatter.contributors}
           image={"/assets/images/terminus-thumbLarge.png"}
+          reviewed={isoDate.frontmatter.reviewed}
         />
         <div className="">
           <div className="container">
@@ -119,6 +126,8 @@ class GuideTemplate extends React.Component {
                       contributors={node.frontmatter.contributors}
                       featured={node.frontmatter.featuredcontributor}
                       editPath={node.fields.editPath}
+                      reviewDate={node.frontmatter.reviewed}
+                      isoDate={isoDate.frontmatter.reviewed}
                     />
                     <MDXProvider components={shortcodes}>
                       <MDXRenderer>{node.body}</MDXRenderer>
@@ -184,11 +193,16 @@ export const pageQuery = graphql`
           url
         }
         featuredcontributor
+        reviewed(formatString: "MMMM DD, YYYY")
         getfeedbackform
       }
       fileAbsolutePath
     }
-
+    date: mdx(fields: { slug: { eq: $slug } }) {
+      frontmatter {
+        reviewed
+      }
+    }
     allMdx(
       filter: {
         fileAbsolutePath: { ne: null }

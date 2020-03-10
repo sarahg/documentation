@@ -24,6 +24,7 @@ import Releases from "../components/releases"
 import TerminusVersion from "../components/terminusVersion"
 import Download from "../components/download"
 import Commands from "../components/commands"
+import ReviewDate from "../components/reviewDate"
 
 const shortcodes = {
   Callout,
@@ -40,6 +41,7 @@ const shortcodes = {
   TerminusVersion,
   Download,
   Commands,
+  ReviewDate
 }
 
 // @TODO relocate this list
@@ -102,32 +104,35 @@ const items = [
 
 class TerminusTemplate extends React.Component {
   componentDidMount() {
-
     $("[data-toggle=popover]").popover({
       trigger: "click",
-    });
-        
-    $('body').on('click', function (e) {
-        $('[data-toggle="popover"]').each(function () {
-        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-            $(this).popover('hide');
+    })
+
+    $("body").on("click", function(e) {
+      $('[data-toggle="popover"]').each(function() {
+        if (
+          !$(this).is(e.target) &&
+          $(this).has(e.target).length === 0 &&
+          $(".popover").has(e.target).length === 0
+        ) {
+          $(this).popover("hide")
         }
-        });
-    });
+      })
+    })
 
-    $('body').keyup(function (e) {
-      $('[data-toggle="popover"]').each(function () {
-      if (event.which === 27) {
-          $(this).popover('hide');
-      }
-      });
-    });
-
+    $("body").keyup(function(e) {
+      $('[data-toggle="popover"]').each(function() {
+        if (event.which === 27) {
+          $(this).popover("hide")
+        }
+      })
+    })
   }
 
   render() {
     const node = this.props.data.mdx
     const contentCols = node.frontmatter.showtoc ? 9 : 12
+    const isoDate = this.props.data.date
 
     return (
       <Layout>
@@ -136,6 +141,7 @@ class TerminusTemplate extends React.Component {
           description={node.frontmatter.description || node.excerpt}
           authors={node.frontmatter.contributors}
           image={"/assets/images/terminus-thumbLarge.png"}
+          reviewed={isoDate.frontmatter.reviewed}
         />
         <div className="">
           <div className="container">
@@ -158,6 +164,8 @@ class TerminusTemplate extends React.Component {
                       contributors={node.frontmatter.contributors}
                       featured={node.frontmatter.featuredcontributor}
                       editPath={node.fields.editPath}
+                      reviewDate={node.frontmatter.reviewed}
+                      isoDate={isoDate.frontmatter.reviewed}
                     />
                     <MDXProvider components={shortcodes}>
                       <MDXRenderer>{node.body}</MDXRenderer>
@@ -180,10 +188,7 @@ class TerminusTemplate extends React.Component {
             </div>
           </div>
         </div>
-        <GetFeedback
-            formId="tfYOGoE7"
-            page={"/" + node.fields.slug}
-          />
+        <GetFeedback formId="tfYOGoE7" page={"/" + node.fields.slug} />
       </Layout>
     )
   }
@@ -212,8 +217,14 @@ export const pageQuery = graphql`
           name
           twitter
         }
+        reviewed(formatString: "MMMM DD, YYYY")
       }
       fileAbsolutePath
+    }
+    date: mdx(fields: { slug: { eq: $slug } }) {
+      frontmatter {
+        reviewed
+      }
     }
   }
 `

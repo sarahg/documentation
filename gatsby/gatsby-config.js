@@ -106,6 +106,10 @@ module.exports = {
               classPrefix: "language-",
               inlineCodeMarker: null,
               aliases: {},
+              prompt: {
+                user: "user",
+                host: "localhost",
+              },
             },
           },
         ]
@@ -163,7 +167,7 @@ module.exports = {
               maxWidth: 1035,
               // sizeByPixelDensity: true,
               markdownCaptions: true,
-              showCaptions: true,
+              showCaptions: false,
               linkImagesToOriginal: false,
             },
           },
@@ -180,6 +184,10 @@ module.exports = {
               classPrefix: "language-",
               inlineCodeMarker: null,
               aliases: {},
+              prompt: {
+                user: "user",
+                host: "localhost",
+              },
             },
           },
           {

@@ -13,10 +13,12 @@ const shortcodes = {
 
 const Releases = ({ data }) => (
   <>
-    {data.allReleasesJson.edges.map((release, i) => {
+    {data.allTerminusReleasesJson.edges.map((release, i) => {
       return (
         <div key={i}>
-          <h3 className="toc-ignore" id={release.node.tag_name}>{release.node.tag_name}</h3>
+          <h3 className="toc-ignore" id={release.node.tag_name}>
+            {release.node.tag_name}
+          </h3>
           <MDXProvider components={shortcodes}>
             <MDXRenderer>
               {release.node.fields.markdownBody.childMdx.body}
@@ -33,7 +35,7 @@ export default props => (
   <StaticQuery
     query={graphql`
       query {
-        allReleasesJson(
+        allTerminusReleasesJson(
           sort: { fields: [tag_name], order: DESC }
           filter: { fields: { original_id: { gt: 5224487 } } }
         ) {
