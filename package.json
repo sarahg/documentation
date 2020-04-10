@@ -81,6 +81,7 @@
     "format": "prettier --write src/**/*.{js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
+    "tags-json": "node ./scripts/tags-json.js",
     "lighthouse-run": "node ./tests/lighthouse/lighthouse.run.js",
     "lighthouse-run-local": "node ./tests/lighthouse/lighthouse.run.local.js",
     "lighthouse-test": "jest ./tests/lighthouse/lighthouse.test.js",

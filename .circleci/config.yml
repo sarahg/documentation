@@ -37,6 +37,10 @@ jobs:
           command: |
             ./node_modules/gatsby/node_modules/.bin/gatsby build --prefix-paths
       - run:
+          name: Build tags.json
+          command: |
+            npm run tags-json
+      - run:
           name: Remove empty directories
           command: |
             find ~/build/public -type d -empty -delete
