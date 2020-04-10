@@ -11,10 +11,13 @@ let tags = {}
 const sysPath = __dirname + "/../source/content/"
 let docs = getAllFiles(sysPath)
 
-// Pick out the web path and tag list for each doc.
+// Pick out the web path, tag list and title for each doc.
 docs.forEach(function(file) {
   let webPath = file.replace(sysPath, "").replace(/\.[^/.]+$/, "")
-  tags[webPath] = getTags(file)
+  tags[webPath] = {
+    title: getContent(file, "title"),
+    tags: getContent(file, "tags"),
+  }
 })
 
 // Write this to a JSON file.
@@ -29,21 +32,31 @@ console.log("🤘 Updated tags.json.")
  * Retrieve doc tags from a markdown file.
  * @param {string} file
  *   A file name.
+ * @param {string} field
+ *   A field from the doc (title or tags).
  * @return {string} tags
  *   List of comma-separated doc tags.
  */
-function getTags(file) {
-  let tags = ""
+function getContent(file, field) {
+  let content = ""
+
+  if (field == "tags") {
+    var regex = new RegExp(/(?<=tags: )\[(.*?)\]/)
+  } else if (field == "title") {
+    var regex = new RegExp(/(?<=title: )(.*)/)
+  }
+
   try {
     let data = fs.readFileSync(file, "utf8")
-    let matches = data.match(/(?<=tags: )\[(.*?)\]/)
+    let matches = data.match(regex)
     if (matches) {
-      tags = matches[1]
+      content = matches[1]
     }
   } catch (e) {
     console.log("Error: ", e.stack)
   }
-  return tags
+
+  return content
 }
 
 /**
